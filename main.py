@@ -10,22 +10,32 @@ import mysql.connector
 import pymysql
 
 
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 class DatabaseConnection:
-    def __init__(self, host="localhost", user="root", password="pythoncourse",
-                 database="school"):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
+    def __init__(self):
+        self.host = os.getenv("DB_HOST", "localhost")
+        self.user = os.getenv("DB_USER", "root")
+        self.password = os.getenv("DB_PASSWORD")
+        self.database = os.getenv("DB_NAME", "school")
 
     def connect(self):
-        connection = pymysql.connect(host=self.host, user=self.user,
-
-                                     password=self.password, database=self.database)
-
-        print("Connection successful")
-
-        return connection
+        try:
+            connection = pymysql.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database
+            )
+            print("Connection successful")
+            return connection
+        except Error as e:
+            print(f"Failed to connect to the database: {e}")
+            return None
 
 
 class MainWindow(QMainWindow):
